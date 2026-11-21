@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Freedom Wallet</title>
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#0a0b0e">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="theme-color" content="#08080b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@1&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f1f3ef;--card:#fff;--text:#14201a;--muted:#6b766f;--bd:#e3e7e1;--ac:#1f7a4d;--inc:#1ea35a;--exp:#e5484d;--pln:#5b6cf0;--sh:0 6px 20px #14201a14}
@@ -969,8 +969,8 @@ const K={cur:'h_curr'+sfx,acc:'h_accounts'+sfx,tx:'h_tx'+sfx,cat:'h_cats'+sfx,cm
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}}};
 const H=(m,h)=>{try{if(m==='replace')history.replaceState({},'',h)}catch(e){}};
-let cur=LS.get(K.cur)||'AED', dark=LS.get(K.dark)==='true';
-let accounts=ld(K.acc,WID==='main'?{Cash:0,Bank:0}:{}), txs=ld(K.tx,[]), custom=ld(K.cat,[]), catMap=ld(K.cm,{}), accPics=ld(K.ap,{}), accCols=ld(K.ac,WID==='main'?{Cash:'g:mint',Bank:'g:ocean'}:{}), catOv=ld(K.ov,{}), catHid=ld(K.hid,[]), accCur=ld(K.cr,{}), accSz=ld(K.sz,WID==='main'?{Cash:'half',Bank:'half'}:{}), accBp=ld(K.bp,{}), accUp=ld(K.up,{}), accIo=ld(K.io,{});
+let cur=LS.get(K.cur)||'AED', dark=LS.get(K.dark)!=='false';
+let accounts=ld(K.acc,WID==='main'?{Cash:0,Bank:0,Savings:0,Card:0,Wallet:0}:{}), txs=ld(K.tx,[]), custom=ld(K.cat,[]), catMap=ld(K.cm,{}), accPics=ld(K.ap,{}), accCols=ld(K.ac,WID==='main'?{Cash:'#06b6d4',Bank:'#eab308',Savings:'#22c55e',Card:'#f97316',Wallet:'#64748b'}:{}), catOv=ld(K.ov,{}), catHid=ld(K.hid,[]), accCur=ld(K.cr,{}), accSz=ld(K.sz,WID==='main'?{Cash:'half',Bank:'half',Savings:'full',Card:'half',Wallet:'half'}:{}), accBp=ld(K.bp,{}), accUp=ld(K.up,{}), accIo=ld(K.io,{});
 let tsOpen=false, active='All', selAcc=null, curTab='accounts', photo=null, selCat='Food & Drinks';
 let md=new Date(); md=new Date(md.getFullYear(),md.getMonth(),1);
 const R='#e53935',G='#2fd46b';
@@ -1893,8 +1893,8 @@ body.th-custom .plrow{background:linear-gradient(135deg,${tn(c1,18)} 0%,${tn(k2,
  let st=document.getElementById('thCx');if(!st){st=document.createElement('style');st.id='thCx';document.head.appendChild(st)}st.textContent=css;
 }
 {const sv=loadThC();if(sv)setCustom(sv)}
-let theme=LS.get('ali_wallet_theme');if(!LS.get('w_defgold')){theme='gold';LS.set('ali_wallet_theme','gold');LS.set('w_defgold','1')}if(!THEMES[theme])theme='gold';
-function applyTheme(t){theme=THEMES[t]?t:'gold';const b=document.body;b.className.split(' ').forEach(c=>{if(c.startsWith('th-'))b.classList.remove(c)});if(theme!=='gold')b.classList.add('th-'+theme);GR.splice(0,GR.length,...THEMES[theme].gr);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=THEMES[theme].c[0];const s=document.getElementById('thSt');if(s)s.textContent=THEMES[theme].n}
+let theme=LS.get('ali_wallet_theme');if(!LS.get('w_defpurple')){theme='purple';LS.set('ali_wallet_theme','purple');dark=true;LS.set(K.dark,'true');document.body.classList.toggle('dark',true);LS.set('w_defpurple','1')}if(!THEMES[theme])theme='purple';
+function applyTheme(t){theme=THEMES[t]?t:'purple';const b=document.body;b.className.split(' ').forEach(c=>{if(c.startsWith('th-'))b.classList.remove(c)});if(theme!=='gold')b.classList.add('th-'+theme);GR.splice(0,GR.length,...THEMES[theme].gr);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=THEMES[theme].c[0];const s=document.getElementById('thSt');if(s)s.textContent=THEMES[theme].n}
 function drawTheme(){const cur=thPrev||theme,sv=loadThC();$('thB').innerHTML=`<button type="button" class="thopt" onclick="openThC()"><span class="thmk-i">🎨</span><span class="thtx"><b>${sv?'Edit my own theme':'Make your own theme'}</b><small>Pick one colour, or mix 2–3 colours</small></span><span class="thck">›</span></button>`+Object.entries(THEMES).map(([k,v])=>`<div class="thopt${k===cur?' on':''}" data-t="${k}"><span class="thsw">${v.c.map(c=>`<i style="background:${c}"></i>`).join('')}</span><span class="thtx"><b>${v.n}</b><small>${k===theme?'Current theme':v.d}</small></span><button type="button" class="thck" aria-label="Select theme" onclick="selTheme('${k}')">${k===cur?'✓':''}</button></div>`).join('')}
 function setTheme(t){LS.set('ali_wallet_theme',t);applyTheme(t);drawTheme();try{render()}catch(e){}}
 /* smooth crossfade when the look changes (falls back to instant) */
